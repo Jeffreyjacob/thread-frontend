@@ -29,7 +29,7 @@ const CommentPopOver = ({ Post, HandleComment }: Props) => {
                         <div className="w-full flex flex-col gap-2 mb-4">
                             <div className="w-full flex gap-2">
                                 <Avatar>
-                                    <AvatarImage src={avatarImage || Post.user.profileImg} alt="profileImage" />
+                                    <AvatarImage src={Post.user.profileImg || avatarImage} alt="profileImage" />
                                     <AvatarFallback></AvatarFallback>
                                 </Avatar>
                                 <div className="flex flex-col gap-1 text-primary-primaryText">
@@ -56,7 +56,7 @@ const CommentPopOver = ({ Post, HandleComment }: Props) => {
                         <div>
                             <div className="flex flex-row gap-2">
                                 <Avatar>
-                                    <AvatarImage src={avatarImage || user?.profileImg} />
+                                    <AvatarImage src={user?.profileImg || avatarImage} />
                                     <AvatarFallback>CN</AvatarFallback>
                                 </Avatar>
                                 <div className="mr-2">

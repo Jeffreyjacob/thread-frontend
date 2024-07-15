@@ -33,7 +33,7 @@ const PostDetails = () => {
     return (
         <div className="sm:bg-primary-primarybackground h-full  bg-primary-smallscreenColor">
             {/**Header for small screens */}
-            <div className="fixed sm:hidden w-full flex justify-center py-5  top-0 bg-primary-primarybackground/90">
+            <div className="fixed sm:hidden w-full flex justify-center py-5  top-0 bg-primary-primarybackground z-20">
                 <div className="w-full h-full flex justify-center relative">
                     <img src={ThreadLogo} width={30} />
                     <div className=" absolute top-0 right-4 z-10">
@@ -73,7 +73,7 @@ const PostDetails = () => {
                                                 PostDetails?.comments.map((comment, index) => (
                                                     <div key={index} className="w-full flex gap-3 border-t py-5 border-primary-secondaryText px-6">
                                                         <Avatar>
-                                                            <AvatarImage src={avatarImage || comment.user.profileImg} alt="profileImage" />
+                                                            <AvatarImage src={comment.user.profileImg || avatarImage} alt="profileImage" />
                                                             <AvatarFallback></AvatarFallback>
                                                         </Avatar>
                                                         <div className="w-full flex flex-col gap-1 text-primary-primaryText">

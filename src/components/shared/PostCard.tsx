@@ -8,7 +8,7 @@ import { cn } from "../../lib/utils";
 import { useComment, useDeletePost, useLikePost } from "../../api/postApi";
 import CommentPopOver from "./CommentPopOver";
 import avatarImage from '../../assets/images/avatar-placeholder.png'
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PostOption from "./PostOption";
 
 type Props = {
@@ -65,19 +65,21 @@ const PostCard = ({ post, page }: Props) => {
                     <div className={cn(`w-full flex gap-2`, {
                         "items-center": page === "postdetail"
                     })}>
-                        <Avatar className="w-9 h-9">
-                            <AvatarImage src={avatarImage || Post.user.profileImg} alt="profileImage" />
+                        <Avatar className="w-9 h-9 z-10">
+                            <AvatarImage src={ Post.user.profileImg || avatarImage} alt="profileImage" />
                             <AvatarFallback></AvatarFallback>
                         </Avatar>
                         <div className="w-full flex flex-col gap-1 text-primary-primaryText">
                             {/**Username and time */}
                             <div className="flex justify-between items-center">
                                 <div className="flex gap-3 text-[14px]">
-                                    <span className="font-semibold">{Post.user.username}</span>
+                                    <Link to={`/profile/${Post.user.username}`} className="font-semibold hover:border-b-[1px] border-primary-primaryText">
+                                        {Post.user.username}
+                                    </Link>
                                     <span className="font-semibold text-primary-secondaryText">{formatTimeAgo(Post.createdAt)}</span>
                                 </div>
                                 {
-                                    isAuthenticated &&  <PostOption Click={()=>handleDeletePost(post._id)}/>
+                                    isAuthenticated &&  <PostOption Post={Post} Click={()=>handleDeletePost(post._id)}/>
                                 }
                             </div>
                             {

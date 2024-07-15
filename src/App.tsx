@@ -44,7 +44,7 @@ function App() {
           <Layout>
             <ActivityPage />
           </Layout>} />
-        <Route path="/profile" element={
+        <Route path="/profile/:username" element={
           <Layout>
             <ProfilePage />
           </Layout>} />

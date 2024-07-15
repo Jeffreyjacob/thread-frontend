@@ -207,3 +207,54 @@ export const useDeletePost = ()=>{
     }
     return{deletePost}
 }
+
+export const useEditPost  = (id:string)=>{
+    const queryClient = useQueryClient()
+    const EditPost = async (form:FormData)=>{
+        const res = await fetch(`${API_BASE_URL}/api/post/editPost/${id}`,{
+            method:"PUT",
+            credentials:"include",
+            body:form
+        })
+        const data = await res.json()
+        if(!res.ok){
+            throw new Error("Failed to edit post")
+        }
+        return data
+    }
+    const {mutateAsync:editPost,isPending:isEditing} = useMutation({
+        mutationFn:EditPost,
+        onSuccess:()=>{
+            queryClient.invalidateQueries({queryKey:["getPost"]})
+            toast.dismiss()
+            toast.success("Posted")
+        },
+        onError:()=>{
+            toast.dismiss()
+            toast.error("Unable to edit post ")
+        }
+    })
+    if(isEditing){
+        toast.loading("Posting")
+    }
+    return{editPost}
+}
+
+export const useUserPost = (username:string | undefined)=>{
+    const UserPost = async():Promise<PostType[]>=>{
+        const res = await fetch(`${API_BASE_URL}/api/post/getProfilePost/${username}`,{
+            method:"GET",
+            credentials:"include"
+        })
+        const data = await res.json()
+        if(!res.ok){
+            throw new Error("Failed to fetch post")
+        }
+        return data
+    }
+    const {data:userPost,isLoading:UserPostLoading,refetch:ProfilePostRefetch} = useQuery({
+        queryKey:["getUserPost"],
+        queryFn:UserPost
+    })
+    return {userPost,UserPostLoading,ProfilePostRefetch}
+}

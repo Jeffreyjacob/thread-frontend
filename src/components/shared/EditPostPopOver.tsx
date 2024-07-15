@@ -1,29 +1,27 @@
-import { FilePenLine, Hash, ImagePlay, Images, Plus, X } from "lucide-react"
-
-import { Button } from "../ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Input } from "../ui/input";
-import { useRef, useState } from "react";
-import { Separator } from "../ui/separator";
-import { useSelector } from "react-redux";
-import { RootState } from "../../Redux/store";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTrigger } from "../ui/dialog";
-import { useCreatePost } from "../../api/postApi";
-import { toast } from "sonner";
-import avatarImage from '../../assets/images/avatar-placeholder.png'
-
+import { FilePenLine, Hash, ImagePlay, Images, X } from "lucide-react"
+import { Button } from "../ui/button"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTrigger } from "../ui/dialog"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { useSelector } from "react-redux"
+import { RootState } from "../../Redux/store"
+import { useEffect, useRef, useState } from "react"
+import { Input } from "../ui/input"
+import { Separator } from "../ui/separator"
+import avatarImage from '../../assets/images/avatar-placeholder.png';
+import { PostType } from "../../lib/type"
+import { useEditPost } from "../../api/postApi"
 
 type Props = {
-    Option: "smallSize" | "largeSize" | "Header"
+    Post:PostType
 }
 
-const CreatePostPopOver = ({ Option }: Props) => {
-    const user = useSelector((state: RootState) => state.user.user)
+const EditPostPopOver = ({Post}:Props) => {
+    const user = useSelector((state: RootState) => state.user.user) 
     const [TextField, setTextField] = useState("")
     const [imageUrl, setImageUrl] = useState("")
-    const { AddPost, Posting } = useCreatePost()
     const [imageFile, setImageFile] = useState<File | null>(null)
     const ImgRef = useRef<HTMLInputElement | null>(null)
+    const {editPost} = useEditPost(Post._id)
     const ImageChange = (files: FileList | null) => {
         if (files && files.length > 0) {
             const file = files[0];
@@ -32,26 +30,27 @@ const CreatePostPopOver = ({ Option }: Props) => {
             setImageUrl(url);
         }
     }
-    if (Posting) {
-        return toast.loading("Posting...")
-    }
-    const HandlePost = () => {
-        const formData = new FormData()
-        formData.append("text", TextField)
-        if (imageFile) {
-            formData.append("img", imageFile)
+   useEffect(()=>{
+     if(Post){
+        setTextField(Post.Text)
+        setImageUrl(Post.Img)
+     }
+   },[Post])
+    const HandleEditPost = () => {
+        const formData = new FormData
+        formData.append("text",TextField)
+        if(imageFile){
+            formData.append("img",imageFile)
         }
-        AddPost(formData)
+        editPost(formData)
     }
     return (
         <Dialog>
-            <DialogTrigger>
-                {Option === "smallSize" && <FilePenLine className="text-primary-iconColor w-7 h-7" />}
-                {Option === "largeSize" && <Button className="bg-primary-secondarybackground py-8 px-5 rounded-xl border-[1px]
-                                              border-primary-iconColor hover:bg-primary-secondarybackground/20">
-                    <Plus className="w-10 h-10 text-primary-primaryText" />
-                </Button>}
-            {Option === "Header" && <Input className="w-full bg-transparent border-none" placeholder="Start a thread..."/>}
+            <DialogTrigger asChild>
+                <Button className="w-full flex justify-between bg-transparent hover:bg-primary-secondarybackground">
+                    Edit Post
+                    <FilePenLine className="text-white w-6 h-6" />
+                </Button>
             </DialogTrigger>
             <DialogContent className="bg-primary-secondarybackground border-[1px] border-primary-iconColor rounded-[16px]">
                 <DialogHeader>
@@ -59,11 +58,11 @@ const CreatePostPopOver = ({ Option }: Props) => {
                         <div>
                             <div className="flex flex-row gap-2">
                                 <Avatar>
-                                    <AvatarImage src={user?.profileImg || avatarImage} />
+                                    <AvatarImage src={user?.profileImg || avatarImage } />
                                     <AvatarFallback>CN</AvatarFallback>
                                 </Avatar>
                                 <div className="w-full mr-2">
-                                    <h5 className=" text-primary-primaryText text-[14px] font-semibold text-start">
+                                    <h5 className=" text-primary-primaryText text-[14px] font-semibold">
                                         {user?.username}
                                     </h5>
                                     <Input type="text"
@@ -89,7 +88,8 @@ const CreatePostPopOver = ({ Option }: Props) => {
                                     <ImagePlay className="text-primary-iconColor w-5 h-5" />
                                     <Hash className="text-primary-iconColor w-5 h-5" />
                                 </div>
-                                <Input type="file" className=" hidden" ref={ImgRef} onChange={(e) => ImageChange(e.target.files)} />
+                                <Input type="file" className=" hidden" 
+                                ref={ImgRef} onChange={(e) => ImageChange(e.target.files)} />
                             </div>
                         </div>
                     </DialogDescription>
@@ -99,7 +99,7 @@ const CreatePostPopOver = ({ Option }: Props) => {
                         <h6 className="text-[15px] font-semibold text-primary-secondaryText">Anyone can reply and quote</h6>
                         <DialogClose asChild>
                             <Button className="bg-primary-secondarybackground border-[1px] border-primary-iconColor rounded-lg"
-                                onClick={HandlePost}
+                                onClick={HandleEditPost}
                                 disabled={TextField.length === 0} >
                                 Post
                             </Button>
@@ -108,9 +108,7 @@ const CreatePostPopOver = ({ Option }: Props) => {
                 </DialogFooter>
             </DialogContent>
         </Dialog>
-
-
     )
 }
 
-export default CreatePostPopOver
+export default EditPostPopOver

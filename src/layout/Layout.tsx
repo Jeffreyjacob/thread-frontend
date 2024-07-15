@@ -1,19 +1,30 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import ThreadLogo from '../assets/images/Frame.png';
 import { NavLink, useLocation } from "react-router-dom";
 import { Heart, House, Search, User } from "lucide-react";
 import { cn } from "../lib/utils";
 import LogoutPopover from "../components/shared/LogoutPopover";
 import CreatePostPopOver from "../components/shared/CreatePostPopOver";
+import { useSelector } from "react-redux";
+import { RootState } from "../Redux/store";
 
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { pathname } = useLocation()
+  const user = useSelector((state:RootState)=>state.user.user)
+  const [scrolled,setScrolled] = useState(false);
+  useEffect(()=>{
+    const handleScroll = ()=>{
+       setScrolled(window.screenY > 10)
+    }
+    window.addEventListener("scroll",handleScroll)
+    return ()=> window.removeEventListener("scroll",handleScroll)
+  },[])
   return (
     <div className="w-full h-full sm:flex bg-primary-primarybackground relative">
       {/**Navbar for big screens */}
       <nav className=" hidden w-[80px] sm:flex flex-col items-center
-       py-4 fixed  h-full justify-between">
+       py-4 fixed  h-full justify-between z-20">
         <img src={ThreadLogo} width={35} />
         <ul className="flex flex-col gap-2">
           <li className="p-4 hover:bg-primary-secondarybackground rounded-lg">
@@ -38,9 +49,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </NavLink>
           </li>
           <li className="p-4 hover:bg-primary-secondarybackground rounded-lg">
-            <NavLink to="/profile">
+            <NavLink to={`/profile/${user?.username}`}>
               <User className={cn(`text-primary-iconColor w-7 h-7`, {
-                "text-primary-primaryText": pathname === "/profile"
+                "text-primary-primaryText": pathname === `/profile/${user?.username}`
               })} />
             </NavLink>
           </li>
@@ -51,7 +62,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       </nav>
 
       {/**Navbar small screen */}
-      <nav className="sm:hidden w-full  bottom-0 bg-primary-primarybackground/50 fixed">
+      <nav className={cn(`sm:hidden w-full  bottom-0 bg-primary-primarybackground z-20 fixed`,{
+        "backdrop-blur-lg":scrolled
+      })}>
         <ul className="flex justify-evenly gap-2">
           <li className="p-4 hover:bg-primary-secondarybackground rounded-lg">
             <NavLink to="/" >
@@ -78,9 +91,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </NavLink>
           </li>
           <li className="p-4 hover:bg-primary-secondarybackground rounded-lg">
-            <NavLink to="/profile">
+            <NavLink to={`/profile/${user?.username}`}>
               <User className={cn(`text-primary-iconColor w-7 h-7`, {
-                "text-primary-primaryText": pathname === "/profile"
+                "text-primary-primaryText": pathname === `/profile/${user?.username}`
               })} />
             </NavLink>
           </li>

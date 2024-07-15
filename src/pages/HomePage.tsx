@@ -47,7 +47,7 @@ const HomePage = () => {
       </div>
 
       {/**Header for small screen */}
-      <div className="fixed sm:hidden w-full flex justify-center py-5  top-0 bg-primary-primarybackground/90">
+      <div className="fixed sm:hidden w-full flex justify-center py-5  top-0 bg-primary-primarybackground z-20">
         <div className="w-full h-full flex justify-center relative">
           <img src={ThreadLogo} width={30} />
           <div className=" absolute top-0 right-4 z-10">
@@ -60,12 +60,12 @@ const HomePage = () => {
         <div className="w-full sm:w-[80%] md:w-[600px] sm:bg-primary-secondarybackground sm:rounded-[16px]  text-primary-primaryText  sm:border-primary-iconColor sm:border-[1px]">
           {/**For you and Following section */}
           <div className="w-full sm:hidden flex text-primary-primaryText">
-            <div className={cn(`w-1/2 p-4 flex justify-center`, {
+            <div className={cn(`w-1/2 p-4 flex justify-center cursor-pointer`, {
               "border-b-[2px] border-primary-primaryText": selectType === "For you"
             })} onClick={() => HandleSelectType("For you")}>
               For you
             </div>
-            <div className={cn(`w-1/2 flex p-4 justify-center`, {
+            <div className={cn(`w-1/2 flex p-4 justify-center cursor-pointer`, {
               "border-b-[2px] border-primary-primaryText": selectType === "Following"
             })} onClick={() => HandleSelectType("Following")}>
               Following
@@ -77,7 +77,7 @@ const HomePage = () => {
             {/**Post header */}
           <div className="hidden sm:flex justify-between items-center px-6 py-4">
               <Avatar className="w-9 h-9">
-                <AvatarImage src={avatarImage || user?.profileImg} alt="profileImage" />
+                <AvatarImage src={user?.profileImg || avatarImage } alt="profileImage" />
                 <AvatarFallback></AvatarFallback>
               </Avatar>
               <div className="flex-1">
