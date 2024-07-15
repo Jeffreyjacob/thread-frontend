@@ -61,7 +61,7 @@ const SearchPage = () => {
           {/**suggusted user and search user */}
           <div className="mt-5">
             {
-              isLoading || isRefetching ? <div className="flex flex-col gap-3">
+              isLoading || isRefetching ? <div className="flex flex-col gap-3 pr-5">
                 <SearchUserSkeleton />
                 <SearchUserSkeleton />
                 <SearchUserSkeleton />
