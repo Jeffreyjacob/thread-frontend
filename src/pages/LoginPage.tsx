@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../components/ui/form";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "../components/ui/separator";
 import { ChevronRight } from 'lucide-react';
 import instagramLogo from '../assets/images/instagramLogo.png';
@@ -20,6 +20,7 @@ const formSchema = z.object({
 export type LoginFormType = z.infer<typeof formSchema>
 
 const LoginPage = () => {
+    const navigate = useNavigate()
     const { Login, isPending} = useGetLogin()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -31,6 +32,7 @@ const LoginPage = () => {
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         Login(values)
+        navigate("/login")
     }
 
     const Instagramhandler = async () => {
